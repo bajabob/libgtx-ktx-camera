@@ -1,0 +1,120 @@
+buildscript {
+    ext.kotlinVersion = '1.3.21'
+    ext.libgdx_addons = 'v1.0'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        //classpath "com.github.dwursteisen:libgdx-addons:$libgdx_addons"
+        classpath "com.github.dwursteisen.libgdx-addons:aseprite-plugin:$libgdx_addons"
+        classpath 'com.android.tools.build:gradle:3.1.4'
+
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+    ext {
+        appName = "game_ktx"
+        gdxVersion = '1.9.9-SNAPSHOT'
+        roboVMVersion = '2.3.3'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.3'
+        aiVersion = '1.8.1'
+        ktxVersion = '1.9.9-b1'
+        gdx_recorder = 'fa56b71fe5'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+project(":desktop") {
+    apply plugin: "kotlin"
+
+    dependencies {
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        implementation "com.github.Anuken:GdxGifRecorder:$gdx_recorder"
+    }
+}
+
+
+
+if (hasProperty("ANDROID")) {
+
+    project(":android") {
+        apply plugin: "android"
+        apply plugin: 'kotlin-android'
+
+        configurations { natives }
+
+        dependencies {
+            implementation project(":core")
+            implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+            natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+            natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+            natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+            implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+            natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+            natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+            natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+        }
+    }
+}
+
+
+project(":core") {
+    apply plugin: "kotlin"
+
+    dependencies {
+        api "io.github.libktx:ktx-scene2d:$ktxVersion"
+        api "io.github.libktx:ktx-async:$ktxVersion"
+        api "io.github.libktx:ktx-box2d:$ktxVersion"
+        api "io.github.libktx:ktx-inject:$ktxVersion"
+        api "io.github.libktx:ktx-app:$ktxVersion"
+        api "io.github.libktx:ktx-math:$ktxVersion"
+        api "io.github.libktx:ktx-assets:$ktxVersion"
+        api "io.github.libktx:ktx-i18n:$ktxVersion"
+        api "io.github.libktx:ktx-actors:$ktxVersion"
+        api "io.github.libktx:ktx-collections:$ktxVersion"
+        api "io.github.libktx:ktx-style:$ktxVersion"
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        api "io.github.libktx:ktx-ashley:$ktxVersion"
+        api "io.github.libktx:ktx-graphics:$ktxVersion"
+        api "io.github.libktx:ktx-scene2d:$ktxVersion"
+        api "io.github.libktx:ktx-log:$ktxVersion"
+        api "org.apache.commons:commons-text:1.1"
+        api "com.github.dwursteisen.libgdx-addons:aseprite-addons:$libgdx_addons"
+        api "com.github.dwursteisen.libgdx-addons:ashley-addons:$libgdx_addons"
+        api "com.github.dwursteisen.libgdx-addons:core-addons:$libgdx_addons"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
